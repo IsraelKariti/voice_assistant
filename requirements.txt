@@ -6,3 +6,5 @@ webrtcvad
 numpy
 scipy
 openai-whisper
+pyautogui
+pillow 
