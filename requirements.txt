@@ -1,0 +1,8 @@
+openai
+python-dotenv
+playsound
+sounddevice
+webrtcvad
+numpy
+scipy
+openai-whisper
