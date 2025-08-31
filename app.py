@@ -18,7 +18,8 @@ if __name__ == "__main__":
     stop_event = threading.Event()
 
     # record the user
-    threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True).start()
+    t = threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True)
+    t.start()
 
     while True:
         time.sleep(1)
@@ -54,7 +55,11 @@ if __name__ == "__main__":
                     print(llm_res)
 
                     print('start talking: ', datetime.now().strftime("%H:%M:%S"))
+                    stop_event.set()
+                    print('is thread alive: ', t.is_alive())
+                    stop_event.clear()
                     talk(llm_res)
+                    threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True).start()
                     
                 else:
                     print('this is a question of the llm!')
