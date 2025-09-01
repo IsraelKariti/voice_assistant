@@ -56,13 +56,14 @@ if __name__ == "__main__":
 
                     print('start talking: ', datetime.now().strftime("%H:%M:%S"))
                     stop_event.set()
-                    print('is thread alive: ', t.is_alive())
-                    stop_event.clear()
                     talk(llm_res)
-                    threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True).start()
-                    
+                    print('after talk in app')
+                    stop_event.clear()
+                    t = threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True)
+                    t.start()
                 else:
                     print('this is a question of the llm!')
 
             else:
                 print('this doesnt require a response......')
+    

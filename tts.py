@@ -18,5 +18,7 @@ def talk(text):
             tmp_path = f.name
         resp.stream_to_file(tmp_path)
 
+    print('before play sound')
     playsound(tmp_path)   # plays the MP3
+    print('after play sound')
     os.remove(tmp_path)   # clean up

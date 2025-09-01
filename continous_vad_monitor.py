@@ -47,7 +47,7 @@ def record_with_vad(wav_files_queue, stop_event):
                             blocksize=IN_BLOCK,
                             callback=audio_callback):
             
-            while True:
+            while not stop_event.is_set():
                 
                 block = q.get()  # np.float32, shape (IN_BLOCK, 1)
                 block_16k = resample_poly(block, TARGET_SR, CAPTURE_SR).astype(np.float32)
@@ -84,6 +84,7 @@ def record_with_vad(wav_files_queue, stop_event):
                             file_index += 1
                     else:
                         buffer = bytearray()
+            print('recording stopped')
                             
     except KeyboardInterrupt:
         print("\nStopping…")
