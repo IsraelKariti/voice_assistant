@@ -27,43 +27,22 @@ if __name__ == "__main__":
         if wav_file:
             
             # Print only the time
-            print('convert to text: ', datetime.now().strftime("%H:%M:%S"))
-
-            # get transcription
+            print('transcribing: ', datetime.now().strftime("%H:%M:%S"))
             transcription = convert_speech_to_text(wav_file)
             print(transcription)
-
-            print('remove wav file: ', datetime.now().strftime("%H:%M:%S"))
             os.remove(wav_file)
+        
+            
+            print('send to llm text + screenshot: ', datetime.now().strftime("%H:%M:%S"))
+            llm_res = llm_response(transcription)
+            print(llm_res)
 
-            print('analyze if transcription is a question: ', datetime.now().strftime("%H:%M:%S"))
-            # analyze transcription
-            res = analyze_text(transcription)
+            print('start talking: ', datetime.now().strftime("%H:%M:%S"))
+            stop_event.set()
+            talk(llm_res)
 
-            print(res)
-            if res.is_question_for_llm:
-                if res.is_screenshot_required:
-                    print('take a screenshot: ', datetime.now().strftime("%H:%M:%S"))
-                    ImageGrab.grab(all_screens=True).save('screenshot.png')
-
-                    print('encode the file to base64: ', datetime.now().strftime("%H:%M:%S"))
-                    with open('screenshot.png', "rb") as f:
-                        img_base64 = base64.b64encode(f.read()).decode("utf-8")
-                    
-                    print('send to llm text + screenshot: ', datetime.now().strftime("%H:%M:%S"))
-                    llm_res = llm_response(transcription, img_base64)
-                    print(llm_res)
-
-                    print('start talking: ', datetime.now().strftime("%H:%M:%S"))
-                    stop_event.set()
-                    talk(llm_res)
-                    print('after talk in app')
-                    stop_event.clear()
-                    t = threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True)
-                    t.start()
-                else:
-                    print('this is a question of the llm!')
-
-            else:
-                print('this doesnt require a response......')
+            print('after talk in app')
+            stop_event.clear()
+            t = threading.Thread(target=record_with_vad, args=(wav_files_queue, stop_event), daemon=True)
+            t.start()
     

@@ -11,12 +11,10 @@ instructions = """
                 you are a helpful assistant, you help the user while he is using his laptop. 
                 you get a text which is a transcription of a recording of something that the user said while he is using his laptop.
                 you analyze a what the user said and decide if this text is the user asking the LLM a question.
-                you also analyze if the question is about something that the user is looking at on the screen and decide if a screenshot is needed to help you answer the user's question.
+                you also analyze if the question is about something that the user is looking at on the screen.
+                you should decide if a screenshot is needed to help you answer the user's question.
+                if a screenshot is need use the appropriate tool
                 """
-
-class UserVoiceAnalysis(BaseModel):
-    is_question_for_llm: bool
-    is_screenshot_required: bool
 
 def analyze_text(text: str) -> bool:
 
